@@ -94,7 +94,7 @@ if st.session_state['Light'] == 'red':
     push_credentials = st.button("Login")
 
     if push_credentials:
-        if user =="admin" and password =="admin":
+        if user =="dashboard@predictai.it" and password =="predict_saponaria_2024":
             st.write("Accesso Consentito! Ora puoi visualizzare ogni tab della dashboard!")
             st.session_state['Light'] = 'green'
         else:
