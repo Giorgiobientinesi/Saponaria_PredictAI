@@ -189,7 +189,14 @@ else:
     st.markdown(custom_style_subtitle, unsafe_allow_html=True)
     st.markdown("<div class='bold-text-subtitle'>Analizza la previsione nel tempo!</div>", unsafe_allow_html=True)
 
-    previsioni = pd.read_csv("File_Forecaster.csv")
+    previsioni_1 = pd.read_csv("File_forecaster_1.csv")
+    previsioni_2 = pd.read_csv("File_forecaster_2.csv")
+    previsioni_3 = pd.read_csv("File_forecaster_3.csv")
+    previsioni_4 = pd.read_csv("File_forecaster_4.csv")
+    previsioni_5 = pd.read_csv("File_forecaster_5.csv")
+
+    previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
+
 
 
     st.write(" ")

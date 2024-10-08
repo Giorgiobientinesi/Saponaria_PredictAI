@@ -185,7 +185,13 @@ if 'Light' not in st.session_state:
 if st.session_state['Light'] == 'red':
     st.write("Prego fare accesso dalla pagina Login.")
 else:
-    previsioni = pd.read_csv("File_Forecaster.csv")
+    previsioni_1 = pd.read_csv("File_forecaster_1.csv")
+    previsioni_2 = pd.read_csv("File_forecaster_2.csv")
+    previsioni_3 = pd.read_csv("File_forecaster_3.csv")
+    previsioni_4 = pd.read_csv("File_forecaster_4.csv")
+    previsioni_5 = pd.read_csv("File_forecaster_5.csv")
+
+    previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5])
     giacenze = pd.read_csv("Giacenze attuali.csv")
 
     previsioni["Quantità"] =previsioni["Quantità"].round(0)

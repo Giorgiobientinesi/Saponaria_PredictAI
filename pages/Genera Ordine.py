@@ -163,8 +163,13 @@ else:
     # Contenuto principale
     st.markdown("<div class='title-container'>Genera Previsione</div>", unsafe_allow_html=True)
 
+    previsioni_1 = pd.read_csv("File_forecaster_1.csv")
+    previsioni_2 = pd.read_csv("File_forecaster_2.csv")
+    previsioni_3 = pd.read_csv("File_forecaster_3.csv")
+    previsioni_4 = pd.read_csv("File_forecaster_4.csv")
+    previsioni_5 = pd.read_csv("File_forecaster_5.csv")
 
-    previsioni = pd.read_csv("File_Forecaster.csv")
+    previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5])
 
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
 
