@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 from datetime import datetime, timedelta
-import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
 
@@ -194,7 +192,12 @@ else:
     ordine = ordine.groupby("Articolo").sum().reset_index()
     ordine["Periodo"] = str(input_data_inizio) + " - " + str(input_data_fine)
 
+    if "Totali" in scelta_prodotto:
+        ordine = ordine
+    else:
+        ordine = ordine[ordine["Articolo"].isin(scelta_prodotto)]
+
     st.markdown(button_style, unsafe_allow_html=True)
     genera = st.button("Genera!")
     if genera:
-        st.dataframe(ordine)
+        st.dataframe(ordine,width=1000)

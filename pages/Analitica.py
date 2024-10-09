@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from datetime import datetime, timedelta
-import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
 title_style = """
@@ -189,7 +187,10 @@ else:
     analitica = pd.read_csv("Analitica_mensile.csv")
     analitica["Data"] = pd.to_datetime(analitica["Data"])
 
-    #st.dataframe(analitica)
+    analitica["Somma di Q.tà"] = analitica["Somma di Q.tà"].round(0)
+    analitica["Somma di Importo"] = analitica["Somma di Importo"].round(0)
+
+
 
 
     data_minima = min(analitica["Data"])
@@ -237,7 +238,7 @@ else:
         analitica_scopo = analitica_scopo[analitica_scopo["Famiglia"].isin(scelta_famiglia)]
 
 
-    Volumi = st.toggle("Visualizza in Volumi di vendita")
+    Volumi = st.toggle("Visualizza in Volume finanziario")
 
     st.divider()
     st.write(" ")
@@ -246,11 +247,11 @@ else:
 
     analitica_scopo = analitica_scopo[analitica_scopo["Data"]>=input_data_inizio]
     analitica_scopo = analitica_scopo[analitica_scopo["Data"]<=input_data_fine]
-    analitica_scopo["Quantità"] = analitica_scopo["Somma di Importo"]
-    annotazione = "Volume finanziaro"
+    analitica_scopo["Quantità"] = analitica_scopo["Somma di Q.tà"]
+    annotazione = "Quantità"
     if Volumi:
-        annotazione = "Volumi"
-        analitica_scopo["Quantità"] = analitica_scopo["Somma di Q.tà"]
+        annotazione = "Volume finanziaro"
+        analitica_scopo["Quantità"] = analitica_scopo["Somma di Importo"]
 
 
     primo_grafico  = analitica_scopo[["Data","Quantità"]]

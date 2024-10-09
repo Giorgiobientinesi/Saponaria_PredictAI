@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 from datetime import datetime, timedelta
 import plotly.graph_objects as go
 
@@ -195,6 +194,11 @@ else:
 
     previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
 
+    previsioni["Quantità"] = previsioni["Quantità"].round(0)
+    previsioni["Volume finanziario"] = previsioni["Volume finanziario"].round(0)
+
+
+
 
 
     st.write(" ")
@@ -271,7 +275,7 @@ else:
     input_data_fine = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=data_massima))
     col1.write(" ")
 
-    Economico = col1.toggle("Visualizza in Euro")
+    Economico = col1.toggle("Visualizza in Volume finanziario")
 
     if Economico:
         previsioni_scopo_grafico["Quantità"] = previsioni_scopo_grafico["Volume finanziario"]
@@ -279,8 +283,10 @@ else:
 
 
 
-    previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>input_data_inizio]
-    previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]<input_data_fine]
+
+
+    previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>=input_data_inizio]
+    previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]<=input_data_fine]
 
 
 
@@ -336,7 +342,24 @@ else:
 
 
     st.markdown("<div class='subtitle-container'>Dati Raw</div>", unsafe_allow_html=True)
-    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità"]],width=1500)
+    previsioni_scopo_grafico['ds'] = pd.to_datetime(previsioni_scopo_grafico['ds'])
+
+
+    # Funzione per calcolare la settimana del mese
+    def settimana_del_mese(data):
+        # Trova il primo giorno del mese
+        primo_giorno = data.replace(day=1)
+        # Calcola la settimana attuale e quella del primo giorno del mese
+        settimana_corrente = data.weekofyear
+        settimana_primo_giorno = primo_giorno.weekofyear
+        # Calcola il numero di settimana del mese
+        return settimana_corrente - settimana_primo_giorno + 1
+
+
+    # Applica la funzione per creare la colonna "settimana_del_mese"
+    previsioni_scopo_grafico['Numero settimana'] = previsioni_scopo_grafico['ds'].apply(settimana_del_mese)
+
+    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]],width=1500)
 
 
     st.write(" ")

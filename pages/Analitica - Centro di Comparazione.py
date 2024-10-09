@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from datetime import datetime, timedelta
-import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
 
@@ -187,6 +185,8 @@ else:
 
 
     analitica = pd.read_csv("Analitica_mensile.csv")
+    analitica["Somma di Q.tà"] = analitica["Somma di Q.tà"].round(0)
+    analitica["Somma di Importo"] = analitica["Somma di Importo"].round(0)
 
     analitica["Data"] = pd.to_datetime(analitica["Data"])
 
@@ -244,7 +244,7 @@ else:
     input_data_fine_uno = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=pd.to_datetime("2023-01-01"),key="B"))
 
 
-    col2.markdown("<div class='subtitle-container'>Scegli l' intervallo da comparare</div>", unsafe_allow_html=True)
+    col2.markdown("<div class='subtitle-container'>Scegli l'intervallo da comparare</div>", unsafe_allow_html=True)
     col2.write(" ")
     input_data_inizio_due = pd.to_datetime(col2.date_input("Seleziona la data di inizio",min_value=data_minima,value=pd.to_datetime("2023-01-01"),key="C"))
     input_data_fine_due = pd.to_datetime(col2.date_input("Seleziona la data di fine",max_value=data_massima,value=pd.to_datetime("2024-01-01"),key="D"))
@@ -261,16 +261,16 @@ else:
 
 
 
-    Volumi = st.toggle("Visualizza in Volumi di vendita")
+    Volumi = st.toggle("Visualizza in Volume Finanzario")
     annotazione = "Volume finanziaro"
 
     if Volumi:
-        annotazione = "Volumi"
-        primo_df_scopo["Quantità"] = primo_df_scopo["Somma di Q.tà"]
-        secondo_df_scopo["Quantità"] = secondo_df_scopo["Somma di Q.tà"]
-    else:
+        annotazione = "Volume finanziaro"
         primo_df_scopo["Quantità"] = primo_df_scopo["Somma di Importo"]
         secondo_df_scopo["Quantità"] = secondo_df_scopo["Somma di Importo"]
+    else:
+        primo_df_scopo["Quantità"] = primo_df_scopo["Somma di Q.tà"]
+        secondo_df_scopo["Quantità"] = secondo_df_scopo["Somma di Q.tà"]
 
 
     st.divider()
@@ -321,7 +321,7 @@ else:
         paper_bgcolor='rgba(240, 240, 240, 1)',  # Sfondo del box
     )
 
-    st.markdown("<div class='subtitle-container'>Top 10 differenze ({})</div>".format(annotazione), unsafe_allow_html=True)
+    st.markdown("<div class='subtitle-container'>Top differenze ({})</div>".format(annotazione), unsafe_allow_html=True)
     st.plotly_chart(fig)
 
     df_merged_df = df_merged[[scelta_raggruppamento,"Differenza"]]
