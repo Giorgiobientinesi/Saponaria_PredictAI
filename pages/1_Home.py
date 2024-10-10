@@ -187,6 +187,14 @@ else:
     previsioni_5 = pd.read_csv("File_forecaster_5.csv")
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5])
+    da_rimuovere = pd.read_csv("Da_rimuovere.csv")
+
+    previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
+    previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
+    previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
+    previsioni = previsioni.drop(["Key"],axis=1)
+
+
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
     previsioni["Volume finanziario"] = previsioni["Volume finanziario"].round(0)
     previsioni["Intervallo Basso"] = previsioni["Intervallo Basso"].round(0)
@@ -231,7 +239,7 @@ else:
     create_metric_card("Quantità registrate ultimi 30 giorni", value_1,col1)
     create_metric_card("Quantità previste prossimi 30 giorni",value_2,col2)
     create_metric_card("Fatturato registrato ultimi 30 giorni", "€" +value_3,col3)
-    create_metric_card("Fatturato previsto prossimi 30 giorni","€" +value_4,col4)
+    create_metric_card("Fatturato prossimi 30 giorni","€" +value_4,col4)
 
     st.write(" ")
     st.write(" ")
