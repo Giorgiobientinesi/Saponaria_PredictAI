@@ -229,13 +229,13 @@ else:
     else:
         analitica_scopo = analitica_scopo[analitica_scopo["Nazione"].isin(scelta_nazioni)]
 
-    famiglia_unici = analitica_scopo["Famiglia"].unique().tolist()
-    famiglia_unici.append("Tutti")
-    scelta_famiglia = col2.multiselect("Seleziona uno o più **Famiglie di Prodotto**:", famiglia_unici,default="Tutti")
-    if "Tutti" in scelta_famiglia:
-        analitica_scopo = analitica_scopo
+    linea_unici = analitica_scopo["Linea Prodotto"].unique().tolist()
+    linea_unici.append("Tutti")
+    scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
+    if "Tutti" in scelta_linea:
+        previsioni_scopo = analitica_scopo
     else:
-        analitica_scopo = analitica_scopo[analitica_scopo["Famiglia"].isin(scelta_famiglia)]
+        previsioni_scopo = analitica_scopo[analitica_scopo["Linea Prodotto"].isin(scelta_linea)]
 
 
     Volumi = st.toggle("Visualizza in Volume finanziario")

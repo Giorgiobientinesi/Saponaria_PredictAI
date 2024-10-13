@@ -186,6 +186,7 @@ else:
     previsioni_4 = pd.read_csv("File_forecaster_4.csv")
     previsioni_5 = pd.read_csv("File_forecaster_5.csv")
 
+
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5])
     da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 
@@ -216,36 +217,43 @@ else:
 
     previsioni['ds'] = pd.to_datetime(previsioni['ds'])
 
-    oggi = datetime.now()
-    un_mese_fa = oggi - timedelta(days=30)
 
-    df_ultimo_mese = previsioni[previsioni['ds'] >= un_mese_fa]
-    df_ultimo_mese = df_ultimo_mese[df_ultimo_mese['ds'] < oggi]
+    oggi = pd.to_datetime("today")
+    mese_attuale = oggi.month
+    anno_attuale = oggi.year
+    df_mese_adoggi = previsioni[(previsioni['ds'] >= f"{anno_attuale}-{mese_attuale:02d}-01") & (previsioni['ds'] <= oggi)]
 
-    inizio_prossimo_mese = oggi + timedelta(days=1)
-    fine_prossimo_mese = oggi + timedelta(days=31)
-    df_prossimo_mese = previsioni[(previsioni['ds'] >= inizio_prossimo_mese) & (previsioni['ds'] <= fine_prossimo_mese)]
+    df_mese_totale = previsioni[(previsioni['ds'].dt.month == mese_attuale) & (previsioni['ds'].dt.year == anno_attuale)]
 
-
-    value_1 = "{:,.0f}".format(df_ultimo_mese["Quantità"].sum().round(3))
-    value_2 = "{:,.0f}".format(df_prossimo_mese["Quantità"].sum().round(3))
-    value_3 = "{:,.0f}".format(df_ultimo_mese["Volume finanziario"].sum().round(3))
-    value_4 = "{:,.0f}".format(df_prossimo_mese["Volume finanziario"].sum().round(3))
+    value_1 = "{:,.0f}".format(df_mese_adoggi["Quantità"].sum().round(3))
+    value_2 = "{:,.0f}".format(df_mese_totale["Quantità"].sum().round(3))
+    value_3 = "{:,.0f}".format(df_mese_adoggi["Volume finanziario"].sum().round(3))
+    value_4 = "{:,.0f}".format(df_mese_totale["Volume finanziario"].sum().round(3))
 
     # Use a metric value from your app
     col1, col2,col3,col4 = st.columns(4)
 
     # Esempio di utilizzo della funzione
-    create_metric_card("Quantità registrate ultimi 30 giorni", value_1,col1)
-    create_metric_card("Quantità previste prossimi 30 giorni",value_2,col2)
-    create_metric_card("Fatturato registrato ultimi 30 giorni", "€" +value_3,col3)
-    create_metric_card("Fatturato prossimi 30 giorni","€" +value_4,col4)
+    create_metric_card("Quantità registrate mese Corrente", value_1,col1)
+    create_metric_card("Quantità previste mese Corrente",value_2,col2)
+    create_metric_card("Fatturato registrato mese Corrente", "€" +value_3,col3)
+    create_metric_card("Fatturato previsto Mese corrente","€" +value_4,col4)
 
     st.write(" ")
     st.write(" ")
     st.write(" ")
     st.write(" ")
     st.divider()
+
+    oggi = datetime.now()
+    un_mese_fa = oggi - timedelta(days=30)
+    df_ultimo_mese = previsioni[previsioni['ds'] >= un_mese_fa]
+    df_ultimo_mese = df_ultimo_mese[df_ultimo_mese['ds'] < oggi]
+
+
+    inizio_prossimo_mese = oggi + timedelta(days=1)
+    fine_prossimo_mese = oggi + timedelta(days=31)
+    df_prossimo_mese = previsioni[(previsioni['ds'] >= inizio_prossimo_mese) & (previsioni['ds'] <= fine_prossimo_mese)]
 
     col1,col2 = st.columns(2)
 

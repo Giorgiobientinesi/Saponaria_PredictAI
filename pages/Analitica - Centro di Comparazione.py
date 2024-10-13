@@ -223,13 +223,13 @@ else:
     else:
         df_scopo = df_scopo[df_scopo["Nazione"].isin(scelta_nazioni)]
 
-    famiglia_unici = df_scopo["Famiglia"].unique().tolist()
-    famiglia_unici.append("Tutti")
-    scelta_famiglia = col2.multiselect("Seleziona uno o più **Famiglie di Prodotto**:", famiglia_unici,default="Tutti")
-    if "Tutti" in scelta_famiglia:
-        df_scopo = df_scopo
+    linea_unici = df_scopo["Linea Prodotto"].unique().tolist()
+    linea_unici.append("Tutti")
+    scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
+    if "Tutti" in scelta_linea:
+        previsioni_scopo = df_scopo
     else:
-        df_scopo = df_scopo[df_scopo["Famiglia"].isin(scelta_famiglia)]
+        previsioni_scopo = df_scopo[df_scopo["Linea Prodotto"].isin(scelta_linea)]
 
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])

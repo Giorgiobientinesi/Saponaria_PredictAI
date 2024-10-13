@@ -242,13 +242,14 @@ else:
     else:
         previsioni_scopo = previsioni_scopo[previsioni_scopo["Nazione"].isin(scelta_nazioni)]
 
-    famiglia_unici = previsioni_scopo["Famiglia"].unique().tolist()
-    famiglia_unici.append("Tutti")
-    scelta_famiglia = col2.multiselect("Seleziona uno o più **Famiglie di Prodotto**:", famiglia_unici,default="Tutti")
-    if "Tutti" in scelta_famiglia:
+    linea_unici = previsioni_scopo["Linea prodotto"].unique().tolist()
+    linea_unici.append("Tutti")
+    scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
+    if "Tutti" in scelta_linea:
         previsioni_scopo = previsioni_scopo
     else:
-        previsioni_scopo = previsioni_scopo[previsioni_scopo["Famiglia"].isin(scelta_famiglia)]
+        previsioni_scopo = previsioni_scopo[previsioni_scopo["Linea prodotto"].isin(scelta_linea)]
+
 
     #CREO IL DF per il grafico
     previsioni_scopo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario","Volume finanziario Basso"]]
