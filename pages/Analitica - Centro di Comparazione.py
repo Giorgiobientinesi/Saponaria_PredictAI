@@ -227,9 +227,9 @@ else:
     linea_unici.append("Tutti")
     scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
     if "Tutti" in scelta_linea:
-        previsioni_scopo = df_scopo
+        df_scopo = df_scopo
     else:
-        previsioni_scopo = df_scopo[df_scopo["Linea Prodotto"].isin(scelta_linea)]
+        df_scopo = df_scopo[df_scopo["Linea Prodotto"].isin(scelta_linea)]
 
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])

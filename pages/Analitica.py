@@ -187,6 +187,8 @@ else:
     analitica = pd.read_csv("Analitica_mensile.csv")
     analitica["Data"] = pd.to_datetime(analitica["Data"])
 
+    st.write(analitica["Linea Prodotto"].unique())
+
     analitica["Somma di Q.tà"] = analitica["Somma di Q.tà"].round(0)
     analitica["Somma di Importo"] = analitica["Somma di Importo"].round(0)
 
@@ -233,9 +235,9 @@ else:
     linea_unici.append("Tutti")
     scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
     if "Tutti" in scelta_linea:
-        previsioni_scopo = analitica_scopo
+        analitica_scopo = analitica_scopo
     else:
-        previsioni_scopo = analitica_scopo[analitica_scopo["Linea Prodotto"].isin(scelta_linea)]
+        analitica_scopo = analitica_scopo[analitica_scopo["Linea Prodotto"].isin(scelta_linea)]
 
 
     Volumi = st.toggle("Visualizza in Volume finanziario")
