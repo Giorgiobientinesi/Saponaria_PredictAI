@@ -242,13 +242,13 @@ else:
     else:
         previsioni_scopo = previsioni_scopo[previsioni_scopo["Nazione"].isin(scelta_nazioni)]
 
-    linea_unici = previsioni_scopo["Linea prodotto"].unique().tolist()
+    linea_unici = previsioni_scopo["Linea Prodotto"].unique().tolist()
     linea_unici.append("Tutti")
     scelta_linea = col2.multiselect("Seleziona uno o più **Linea di Prodotto**:", linea_unici,default="Tutti")
     if "Tutti" in scelta_linea:
         previsioni_scopo = previsioni_scopo
     else:
-        previsioni_scopo = previsioni_scopo[previsioni_scopo["Linea prodotto"].isin(scelta_linea)]
+        previsioni_scopo = previsioni_scopo[previsioni_scopo["Linea Prodotto"].isin(scelta_linea)]
 
 
     #CREO IL DF per il grafico

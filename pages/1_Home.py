@@ -192,8 +192,12 @@ else:
 
     previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
     previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
-    previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
+    #previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
     previsioni = previsioni.drop(["Key"],axis=1)
+
+    previsioni = previsioni.dropna(subset="Quantità")
+
+    previsioni["Quantità"].fillna(0)
 
 
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
@@ -249,6 +253,7 @@ else:
     un_mese_fa = oggi - timedelta(days=30)
     df_ultimo_mese = previsioni[previsioni['ds'] >= un_mese_fa]
     df_ultimo_mese = df_ultimo_mese[df_ultimo_mese['ds'] < oggi]
+
 
 
     inizio_prossimo_mese = oggi + timedelta(days=1)

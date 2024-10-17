@@ -187,6 +187,8 @@ else:
     analitica = pd.read_csv("Analitica_mensile.csv")
     analitica["Data"] = pd.to_datetime(analitica["Data"])
 
+    st.write(analitica["Linea Prodotto"].unique())
+
     analitica["Somma di Q.tà"] = analitica["Somma di Q.tà"].round(0)
     analitica["Somma di Importo"] = analitica["Somma di Importo"].round(0)
 
