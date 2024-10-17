@@ -186,9 +186,12 @@ else:
     previsioni_3 = pd.read_csv("File_forecaster_3.csv")
     previsioni_4 = pd.read_csv("File_forecaster_4.csv")
     previsioni_5 = pd.read_csv("File_forecaster_5.csv")
+    previsioni_6 = pd.read_csv("File_forecaster_6.csv")
+    previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
-    previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5])
+    previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
     giacenze = pd.read_csv("Giacenze attuali.csv")
+
 
     da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 

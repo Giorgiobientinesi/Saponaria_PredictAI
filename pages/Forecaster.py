@@ -191,9 +191,12 @@ else:
     previsioni_3 = pd.read_csv("File_forecaster_3.csv")
     previsioni_4 = pd.read_csv("File_forecaster_4.csv")
     previsioni_5 = pd.read_csv("File_forecaster_5.csv")
+    previsioni_6 = pd.read_csv("File_forecaster_6.csv")
+    previsioni_7 = pd.read_csv("File_forecaster_7.csv")
+
     da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 
-    previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
+    previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
     previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
     previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
     previsioni = previsioni.drop(["Key"],axis=1)
