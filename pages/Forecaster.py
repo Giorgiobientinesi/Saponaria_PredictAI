@@ -223,7 +223,7 @@ else:
     #CREO TUTTO IL SISTEMA DI SELEZIONE PER FILTRI
     articoli_unici = previsioni_scopo["Articolo"].unique().tolist()
     articoli_unici.append("Tutti")
-    scelta_prodotto = col1.multiselect("Seleziona uno o più **Prodotti**:", articoli_unici,default='Acido ialuronico - multiplo peso molecolare (30 ml)')
+    scelta_prodotto = col1.multiselect("Seleziona uno o più **Prodotti**:", articoli_unici,default='Tutti')
     if "Tutti" in scelta_prodotto:
         previsioni_scopo = previsioni_scopo
     else:
@@ -285,9 +285,11 @@ else:
     col1.write(" ")
 
     Economico = col1.toggle("Visualizza in Volume finanziario")
+    annotazione = "Quantità previste"
 
     if Economico:
         previsioni_scopo_grafico["Quantità"] = previsioni_scopo_grafico["Volume finanziario"]
+        annotazione = "Volume finanziario previsto"
 
 
 
@@ -347,7 +349,7 @@ else:
     oggi = datetime.now()
     previsioni_scopo_grafico_previsioni = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>oggi]
 
-    create_metric_card("Quantità previste", str(sum(previsioni_scopo_grafico_previsioni["Quantità"])).split(".")[0],col1)
+    create_metric_card(annotazione, str(sum(previsioni_scopo_grafico_previsioni["Quantità"])).split(".")[0],col1)
 
 
     st.markdown("<div class='subtitle-container'>Dati Raw</div>", unsafe_allow_html=True)
@@ -367,6 +369,8 @@ else:
 
     # Applica la funzione per creare la colonna "settimana_del_mese"
     previsioni_scopo_grafico['Numero settimana'] = previsioni_scopo_grafico['ds'].apply(settimana_del_mese)
+
+    previsioni_scopo_grafico['ds'] = previsioni_scopo_grafico['ds'].dt.strftime('%d-%m-%Y')
 
     st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]],width=1500)
 
@@ -444,6 +448,8 @@ else:
 
     # Mostra il grafico
     st.plotly_chart(fig2)
+
+    previsioni_scopo_secondo_grafico['ds'] = previsioni_scopo_secondo_grafico['ds'].dt.strftime('%d-%m-%Y')
 
     st.dataframe(previsioni_scopo_secondo_grafico.reset_index(drop=True)[["ds",parametro_raggrupamento,"Quantità"]],width=1200)
 

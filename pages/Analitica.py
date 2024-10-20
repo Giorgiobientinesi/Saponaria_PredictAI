@@ -193,6 +193,7 @@ else:
 
 
 
+
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])
 
@@ -278,6 +279,8 @@ else:
     col1.markdown("<div class='subtitle-container'>Quantità per mese {}</div>".format(annotazione), unsafe_allow_html=True)
     col1.plotly_chart(fig, use_container_width=True)
     col2.markdown("<div class='subtitle-container'>Dati Raw</div>", unsafe_allow_html=True)
+
+    primo_grafico['Data'] = primo_grafico['Data'].dt.strftime('%d-%m-%Y')
     col2.dataframe(primo_grafico,height=400,width=1000)
 
     st.divider()

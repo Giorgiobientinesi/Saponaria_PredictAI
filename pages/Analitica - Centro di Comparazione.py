@@ -262,15 +262,23 @@ else:
 
 
     Volumi = st.toggle("Visualizza in Volume Finanzario")
-    annotazione = "Volume finanziaro"
+    Percentuali = st.toggle("Visualizza differenza in Percentuale")
+
+    annotazione = "Quantità"
 
     if Volumi:
-        annotazione = "Volume finanziaro"
+        annotazione = "Volume Finanziario"
         primo_df_scopo["Quantità"] = primo_df_scopo["Somma di Importo"]
         secondo_df_scopo["Quantità"] = secondo_df_scopo["Somma di Importo"]
     else:
         primo_df_scopo["Quantità"] = primo_df_scopo["Somma di Q.tà"]
         secondo_df_scopo["Quantità"] = secondo_df_scopo["Somma di Q.tà"]
+
+    if Percentuali:
+        colonna_to_plot = "Differenza % "
+    else:
+        colonna_to_plot = "Differenza"
+
 
 
     st.divider()
@@ -290,7 +298,7 @@ else:
     df_merged['Differenza % '] = (df_merged['Quantità_periodo2'] - df_merged['Quantità_periodo1'])/df_merged['Quantità_periodo1']
 
     df_merged['Differenza % ']  = df_merged['Differenza % '].fillna(0)
-
+    df_merged['Differenza % '] = df_merged['Differenza % '] * 100
     # Calculate absolute values for sorting
     df_merged['AbsDifferenza'] = df_merged['Differenza'].abs()
     # Sort by absolute difference and get the top 10
@@ -298,22 +306,22 @@ else:
 
     # Check if there are more than 10 entries to aggregate
     if len(df_merged) > 10:
-        other_sum = df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])]['Differenza'].sum()
-        other_row = pd.DataFrame({scelta_raggruppamento: ['Other'], 'Differenza': [other_sum]})
+        other_sum = df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])][colonna_to_plot].sum()
+        other_row = pd.DataFrame({scelta_raggruppamento: ['Other'], colonna_to_plot: [other_sum]})
         top_nations = pd.concat([top_nations, other_row], ignore_index=True)
 
     # Create a bar chart
-    fig = px.bar(top_nations, x=scelta_raggruppamento, y='Differenza',
-                 color='Differenza',
-                 labels={'Differenza': 'Differenza'},
+    fig = px.bar(top_nations, x=scelta_raggruppamento, y=colonna_to_plot,
+                 color=colonna_to_plot,
+                 labels={colonna_to_plot: colonna_to_plot},
                  title='Top 10 Differenze per {} (Aggregato come "Other")'.format(scelta_raggruppamento))
 
     # Adjust the x-axis to show negative values to the left
-    fig.update_traces(marker=dict(color=top_nations['Differenza'].apply(lambda x: 'red' if x < 0 else 'green')))
+    fig.update_traces(marker=dict(color=top_nations[colonna_to_plot].apply(lambda x: 'red' if x < 0 else 'green')))
     fig.update_layout(
         title="",
         xaxis_title="Nazione",
-        yaxis_title="Differenza",
+        yaxis_title=colonna_to_plot,
         hovermode="x unified",
         width=1600, # Set the width of the plot,
         height = 500,
@@ -324,7 +332,10 @@ else:
     st.markdown("<div class='subtitle-container'>Top differenze ({})</div>".format(annotazione), unsafe_allow_html=True)
     st.plotly_chart(fig)
 
-    df_merged_df = df_merged[[scelta_raggruppamento,"Differenza"]]
+    df_merged_df = df_merged[[scelta_raggruppamento,"Quantità_periodo1","Quantità_periodo2", "Differenza","Differenza % "]]
+
+    df_merged_df["Differenza % "] = (df_merged_df["Differenza % "]).astype(str) + " %"
+
 
     col1,col2,col3= st.columns(3)
     st.markdown("<div class='subtitle-container'>Dati Raw</div>", unsafe_allow_html=True)

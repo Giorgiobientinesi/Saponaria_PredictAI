@@ -194,6 +194,14 @@ else:
 
     ordine = ordine[["Articolo","Quantità"]]
     ordine = ordine.groupby("Articolo").sum().reset_index()
+    #input_data_inizio = input_data_inizio.dt.strftime('%d-%m-%Y')
+
+    input_data_inizio = pd.to_datetime(input_data_inizio)
+    input_data_inizio = input_data_inizio.strftime('%d-%m-%Y')
+
+    input_data_fine = pd.to_datetime(input_data_fine)
+    input_data_fine = input_data_fine.strftime('%d-%m-%Y')
+
     ordine["Periodo"] = str(input_data_inizio) + " - " + str(input_data_fine)
 
     if "Totali" in scelta_prodotto:
