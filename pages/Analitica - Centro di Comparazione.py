@@ -357,7 +357,7 @@ else:
     )
     fig.update_layout(
         title="",
-        xaxis_title="Nazione",
+        xaxis_title=scelta_raggruppamento,
         yaxis_title=colonna_to_plot,
         hovermode="x unified",
         width=1600, # Set the width of the plot,
