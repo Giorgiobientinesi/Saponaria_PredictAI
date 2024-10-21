@@ -295,29 +295,66 @@ else:
     df_merged = df_merged.fillna(0)
 
     df_merged['Differenza'] = df_merged['Quantità_periodo2'] - df_merged['Quantità_periodo1']
-    df_merged['Differenza % '] = (df_merged['Quantità_periodo2'] - df_merged['Quantità_periodo1'])/df_merged['Quantità_periodo1']
+    df_merged['Differenza % '] = df_merged.apply(
+        lambda row: (row['Quantità_periodo2'] - row['Quantità_periodo1']) / row['Quantità_periodo1'] * 100 if row['Quantità_periodo1'] != 0 else 0,axis=1)
 
-    df_merged['Differenza % ']  = df_merged['Differenza % '].fillna(0)
-    df_merged['Differenza % '] = df_merged['Differenza % '] * 100
-    # Calculate absolute values for sorting
+    # Fill NaN values for percentage
+    df_merged['Differenza % '] = df_merged['Differenza % '].fillna(0)
+    df_merged['Differenza % '] = df_merged['Differenza % '].round(2)
+
+    # Calcolare valori assoluti per ordinamento
     df_merged['AbsDifferenza'] = df_merged['Differenza'].abs()
-    # Sort by absolute difference and get the top 10
+
+    # Selezionare le 10 nazioni/articoli/etc. principali in base alla differenza assoluta
     top_nations = df_merged.nlargest(10, 'AbsDifferenza')
 
-    # Check if there are more than 10 entries to aggregate
+    # Gestire il caso in cui ci siano più di 10 elementi
     if len(df_merged) > 10:
-        other_sum = df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])][colonna_to_plot].sum()
-        other_row = pd.DataFrame({scelta_raggruppamento: ['Other'], colonna_to_plot: [other_sum]})
+        # Sommare le quantità e differenze per le altre nazioni
+        other_sum = df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])][
+            ["Quantità_periodo1", "Quantità_periodo2", "Differenza"]].sum()
+
+        # Calcolare la media ponderata delle percentuali, evitando divisioni per zero
+        total_quantity_periodo1 = df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])][
+            "Quantità_periodo1"].sum()
+
+        if total_quantity_periodo1 != 0:
+            other_weighted_percentage = (
+                    df_merged[~df_merged[scelta_raggruppamento].isin(top_nations[scelta_raggruppamento])]
+                    .apply(lambda row: row["Differenza % "] * row["Quantità_periodo1"], axis=1).sum()
+                    / total_quantity_periodo1
+            )
+        else:
+            other_weighted_percentage = 0  # Se non c'è quantità nel periodo 1, la percentuale diventa 0
+
+        # Creazione della riga 'Other'
+        other_row = pd.DataFrame({
+            scelta_raggruppamento: ['Other'],
+            "Quantità_periodo1": [other_sum["Quantità_periodo1"]],
+            "Quantità_periodo2": [other_sum["Quantità_periodo2"]],
+            "Differenza": [other_sum["Differenza"]],
+            "Differenza % ": [other_weighted_percentage],
+            "AbsDifferenza" : abs(other_sum["Differenza"])
+        })
+
+        # Concatenare 'Other' a 'top_nations'
         top_nations = pd.concat([top_nations, other_row], ignore_index=True)
+
 
     # Create a bar chart
     fig = px.bar(top_nations, x=scelta_raggruppamento, y=colonna_to_plot,
                  color=colonna_to_plot,
                  labels={colonna_to_plot: colonna_to_plot},
-                 title='Top 10 Differenze per {} (Aggregato come "Other")'.format(scelta_raggruppamento))
+                 title='Top 10 Differenze per {} (Aggregato come "Other")'.format(scelta_raggruppamento),
+                 custom_data=['Differenza % '])  # Passa i valori di "Differenza % " come dati aggiuntivi
 
-    # Adjust the x-axis to show negative values to the left
-    fig.update_traces(marker=dict(color=top_nations[colonna_to_plot].apply(lambda x: 'red' if x < 0 else 'green')))
+    # Modifica il colore delle barre in base al valore
+    fig.update_traces(
+        marker=dict(color=top_nations[colonna_to_plot].apply(lambda x: 'red' if x < 0 else 'green')),
+        hovertemplate='<b>%{x}</b><br>' +
+                      colonna_to_plot + ': %{y}<br>' +
+                      'Differenza %: %{customdata[0]:.2f}%'  # Aggiungi "Differenza %" all'hover
+    )
     fig.update_layout(
         title="",
         xaxis_title="Nazione",
