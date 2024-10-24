@@ -259,6 +259,7 @@ else:
     previsioni_prossime = previsioni_prossime[["ds","Articolo","Quantità"]].groupby(["Articolo","ds"]).sum().reset_index()
     previsioni_prossime['Forecast cumulato'] = previsioni_prossime['Quantità'].cumsum()
 
+
     giacenza_articolo = giacenze[giacenze["Articolo"]==scelta_articolo]
     giacenza = int(giacenza_articolo["Quantità_giacenza"].iloc[0])
 
@@ -269,7 +270,8 @@ else:
         st.warning("Periodo previsto prossimo stockout è " + stockout_date)
     else:
         st.success("Non è stato rilevato pericolo di stockout!")
-        
+
+
     fig3 = go.Figure()
     fig3.add_trace(go.Scatter(
         x=previsioni_prossime['ds'],
