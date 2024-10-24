@@ -261,6 +261,15 @@ else:
 
     giacenza_articolo = giacenze[giacenze["Articolo"]==scelta_articolo]
     giacenza = int(giacenza_articolo["Quantità_giacenza"].iloc[0])
+
+    if len(previsioni_prossime[previsioni_prossime["Forecast cumulato"] > giacenza_articolo["Quantità_giacenza"].iloc[0]])>0:
+        stockout_date = str(min(
+            previsioni_prossime[previsioni_prossime["Forecast cumulato"] > giacenza_articolo["Quantità_giacenza"].iloc[0]][
+                "ds"]))[:10]
+        st.warning("Periodo previsto prossimo stockout è " + stockout_date)
+    else:
+        st.success("Non è stato rilevato pericolo di stockout!")
+        
     fig3 = go.Figure()
     fig3.add_trace(go.Scatter(
         x=previsioni_prossime['ds'],
