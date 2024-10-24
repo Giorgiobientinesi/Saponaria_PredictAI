@@ -239,6 +239,15 @@ else:
         analitica_scopo = analitica_scopo[analitica_scopo["Linea Prodotto"].isin(scelta_linea)]
 
 
+    codici_unici = analitica_scopo["Codice"].unique().tolist()
+    codici_unici.append("Tutti")
+    scelta_codici = st.multiselect("Seleziona uno o più **Codici**:", codici_unici,default="Tutti")
+    if "Tutti" in scelta_codici:
+        analitica_scopo = analitica_scopo
+    else:
+        analitica_scopo = analitica_scopo[analitica_scopo["Codice"].isin(scelta_codici)]
+
+
     Volumi = st.toggle("Visualizza in Volume finanziario")
 
     st.divider()

@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
+import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
 
@@ -190,14 +191,11 @@ else:
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
-    giacenze = pd.read_csv("Giacenze attuali.csv")
+    giacenze = pd.read_csv("Giacenze attuali.csv",sep=';', encoding='latin-1')
 
 
-    da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 
-    previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
     previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
-    previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
     previsioni = previsioni.drop(["Key"],axis=1)
 
     previsioni["Quantità"] =previsioni["Quantità"].round(0)
@@ -208,6 +206,7 @@ else:
         'Descrizione': 'Articolo',
         'QtaGiac': 'Quantità_giacenza'
     })
+    giacenze['Quantità_giacenza'] = giacenze['Quantità_giacenza'].str.replace(',', '.').astype(float).astype(int)
 
 
     st.write(" ")
@@ -226,12 +225,15 @@ else:
 
     df_prossimo_mese = previsioni[(previsioni['ds'] >= inizio_prossimo_mese) & (previsioni['ds'] <= input_data_fine)]
 
+
     df_prossimo_mese_giacenze = df_prossimo_mese[["Articolo","Quantità"]].groupby("Articolo").sum().reset_index()
     df_prossimo_mese_giacenze = pd.merge(df_prossimo_mese_giacenze, giacenze[["Articolo","Quantità_giacenza"]], on='Articolo', how='left')
     df_prossimo_mese_giacenze = df_prossimo_mese_giacenze.dropna(subset="Quantità_giacenza")
     df_prossimo_mese_giacenze["Differenza"] = df_prossimo_mese_giacenze["Quantità"] - df_prossimo_mese_giacenze["Quantità_giacenza"]
     df_prossimo_mese_giacenze = df_prossimo_mese_giacenze.sort_values(by="Differenza",ascending=False)
     numero_alert = df_prossimo_mese_giacenze[df_prossimo_mese_giacenze["Differenza"]>0].count().iloc[0]
+
+
 
     pezzi_mancanti = int(df_prossimo_mese_giacenze[df_prossimo_mese_giacenze["Differenza"]>0]["Differenza"].sum())
     alert = df_prossimo_mese_giacenze[df_prossimo_mese_giacenze["Differenza"]>0]
@@ -245,6 +247,57 @@ else:
     st.write(" ")
     st.write(" ")
     st.divider()
+
+    st.markdown("<div class='title-container'>Alerting nel tempo</div>", unsafe_allow_html=True)
+    st.write(" ")
+
+    articoli_unici = giacenze["Articolo"].unique().tolist()
+    scelta_articolo = st.selectbox("Seleziona un Prodotto**:", articoli_unici)
+
+    previsioni_prossime = previsioni[previsioni["Articolo"]==scelta_articolo]
+    previsioni_prossime = previsioni_prossime[pd.to_datetime(previsioni_prossime["ds"])>oggi]
+    previsioni_prossime = previsioni_prossime[["ds","Articolo","Quantità"]].groupby(["Articolo","ds"]).sum().reset_index()
+    previsioni_prossime['Forecast cumulato'] = previsioni_prossime['Quantità'].cumsum()
+
+    giacenza_articolo = giacenze[giacenze["Articolo"]==scelta_articolo]
+    giacenza = int(giacenza_articolo["Quantità_giacenza"].iloc[0])
+    fig3 = go.Figure()
+    fig3.add_trace(go.Scatter(
+        x=previsioni_prossime['ds'],
+        y=previsioni_prossime['Forecast cumulato'],
+        mode='lines+markers',
+        name='Forecast Cumulato',
+        line=dict(color='blue')
+    ))
+    fig3.add_trace(go.Scatter(
+        x=previsioni_prossime['ds'],  # Stessa asse X del forecast cumulato
+        y=[giacenza] * len(previsioni_prossime),  # Ripetiamo la giacenza per ogni punto temporale
+        mode='lines',
+        name='Giacenza',
+        line=dict(color='red', dash='dash')
+    ))
+
+    # Personalizzazione del layout
+    fig3.update_layout(
+        title='Forecast Cumulato e Giacenza',
+        xaxis_title='Data',
+        yaxis_title='Quantità',
+        showlegend=True,
+        plot_bgcolor ="#f5f5f5",
+        paper_bgcolor='#f5f5f5'      # Sfondo bianco per l'area esterna
+
+    )
+
+    # Mostriamo il grafico
+    st.plotly_chart(fig3)
+
+
+
+
+    st.write(" ")
+    st.write(" ")
+    st.divider()
+
     st.markdown("<div class='title-container'>Inventario</div>", unsafe_allow_html=True)
     st.write(" ")
 

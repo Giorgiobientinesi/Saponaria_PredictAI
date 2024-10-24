@@ -231,6 +231,14 @@ else:
     else:
         df_scopo = df_scopo[df_scopo["Linea Prodotto"].isin(scelta_linea)]
 
+    codici_unici = df_scopo["Codice"].unique().tolist()
+    codici_unici.append("Tutti")
+    scelta_codici = st.multiselect("Seleziona uno o più **Codici**:", codici_unici,default="Tutti")
+    if "Tutti" in scelta_codici:
+        df_scopo = df_scopo
+    else:
+        df_scopo = df_scopo[df_scopo["Codice"].isin(scelta_codici)]
+
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])
 
@@ -261,6 +269,8 @@ else:
 
 
 
+
+
     Volumi = st.toggle("Visualizza in Volume Finanzario")
     Percentuali = st.toggle("Visualizza differenza in Percentuale")
 
@@ -279,11 +289,19 @@ else:
     else:
         colonna_to_plot = "Differenza"
 
+    if len(primo_df_scopo)>0 and len(secondo_df_scopo)>0:
+        if str(min(primo_df_scopo["Data"])) != str(input_data_inizio_uno) and len(scelta_prodotto)==1:
+            st.warning(
+                "Attenzione! Il prodotto selezionato è stato venduto a partire da una data maggiore alla data di inizio del primo periodo selezionato! La prima data di vendita è " +str(min(primo_df_scopo["Data"]))[:10] )
 
+        else:
+            pass
+    else:
+        st.warning("Non sono stati trovati dati per questa analisi in questo periodo.")
 
+    st.write(str(min(primo_df_scopo["Data"])))
     st.divider()
     scelta_raggruppamento= st.selectbox("Voglio vedere la Differenza per:", ["Articolo","Nazione","Tipologia","Linea Prodotto","Famiglia"])
-
 
     primo_df_scopo = primo_df_scopo[[scelta_raggruppamento,"Quantità"]]
     primo_df_scopo = primo_df_scopo.groupby(scelta_raggruppamento).sum().reset_index()

@@ -188,14 +188,12 @@ else:
     previsioni_6 = pd.read_csv("File_forecaster_6.csv")
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
+    giacenze = pd.read_csv("Giacenze attuali.csv",sep=';', encoding='latin-1')
+
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
-    da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 
-    previsioni = pd.concat([previsioni_1,previsioni_2,previsioni_3,previsioni_4,previsioni_5])
     previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
-    #previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
-    previsioni = previsioni.drop(["Key"],axis=1)
 
     previsioni = previsioni.dropna(subset="Quantità")
 
@@ -208,8 +206,6 @@ else:
     previsioni["Intervallo Alto"] = previsioni["Intervallo Alto"].round(0)
     previsioni["Volume finanziario Alto"] = previsioni["Volume finanziario Alto"].round(0)
     previsioni["Volume finanziario Basso"] = previsioni["Volume finanziario Basso"].round(0)
-
-    giacenze = pd.read_csv("Giacenze attuali.csv")
 
     # Inseriamo lo stile del titolo nel frontend usando st.markdown()
     st.markdown(title_style, unsafe_allow_html=True)
@@ -269,6 +265,9 @@ else:
         'QtaGiac': 'Quantità_giacenza'
     })
 
+    giacenze['Quantità_giacenza'] = giacenze['Quantità_giacenza'].str.replace(',', '.').astype(float).astype(int)
+
+
     df_prossimo_mese_giacenze = df_prossimo_mese[["Articolo","Quantità"]].groupby("Articolo").sum().reset_index()
     df_prossimo_mese_giacenze = pd.merge(df_prossimo_mese_giacenze, giacenze[["Articolo","Quantità_giacenza"]], on='Articolo', how='left')
     df_prossimo_mese_giacenze = df_prossimo_mese_giacenze.dropna(subset="Quantità_giacenza")
@@ -312,11 +311,15 @@ else:
     col1.markdown("<div class='subtitle-container'>Top 5 Prodotti Safe</div>", unsafe_allow_html=True)
     col1.plotly_chart(fig)
 
+    df_prossimo_mese_giacenze_tail['Articolo_abbr'] = df_prossimo_mese_giacenze_tail['Articolo'].apply(
+        lambda x: x[:40] + '...' if len(x) > 20 else x)
+    df_prossimo_mese_giacenze_head['Articolo_abbr'] = df_prossimo_mese_giacenze_head['Articolo'].apply(
+        lambda x: x[:40] + '...' if len(x) > 20 else x)
 
     fig2 = go.Figure()
     # Aggiunta delle barre per Quantità
     fig2.add_trace(go.Bar(
-        x=df_prossimo_mese_giacenze_head['Articolo'],
+        x=df_prossimo_mese_giacenze_head['Articolo_abbr'],
         y=df_prossimo_mese_giacenze_head['Quantità'],
         name='Quantità Previste',
         marker_color='red'
@@ -330,7 +333,7 @@ else:
     )
     # Aggiunta delle barre per Quantità_giacenza
     fig2.add_trace(go.Bar(
-        x=df_prossimo_mese_giacenze_head['Articolo'],
+        x=df_prossimo_mese_giacenze_head['Articolo_abbr'],
         y=df_prossimo_mese_giacenze_head['Quantità_giacenza'],
         name='Quantità in giacenza',
         marker_color='#ceadde'
@@ -342,6 +345,7 @@ else:
         plot_bgcolor='rgba(240, 240, 240, 1)',  # Sfondo del grafico
         paper_bgcolor='rgba(240, 240, 240, 1)',  # Sfondo del box
     )
+
 
 
     col2.markdown(subtitle_style, unsafe_allow_html=True)

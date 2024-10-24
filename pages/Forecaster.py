@@ -194,12 +194,8 @@ else:
     previsioni_6 = pd.read_csv("File_forecaster_6.csv")
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
-    da_rimuovere = pd.read_csv("Da_rimuovere.csv")
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
-    previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)
-    previsioni = previsioni[~previsioni["Key"].isin(da_rimuovere["Key"])]
-    previsioni = previsioni.drop(["Key"],axis=1)
 
 
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
@@ -218,6 +214,7 @@ else:
     st.markdown(card_css, unsafe_allow_html=True)
 
     previsioni_scopo = previsioni
+
 
 
     #CREO TUTTO IL SISTEMA DI SELEZIONE PER FILTRI
@@ -253,6 +250,13 @@ else:
     else:
         previsioni_scopo = previsioni_scopo[previsioni_scopo["Linea Prodotto"].isin(scelta_linea)]
 
+    codici_unici = previsioni_scopo["Codice"].unique().tolist()
+    codici_unici.append("Tutti")
+    scelta_codici = st.multiselect("Seleziona uno o più **Codici**:", codici_unici,default="Tutti")
+    if "Tutti" in scelta_codici:
+        previsioni_scopo = previsioni_scopo
+    else:
+        previsioni_scopo = previsioni_scopo[previsioni_scopo["Codice"].isin(scelta_codici)]
 
     #CREO IL DF per il grafico
     previsioni_scopo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario","Volume finanziario Basso"]]
