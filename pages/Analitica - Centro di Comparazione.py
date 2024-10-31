@@ -88,7 +88,7 @@ custom_style_subtitle = """
 st.markdown("""
     <style>
     body {
-        zoom: 1; /* Regola il valore per impostare lo zoom, 1.0 è il 100%, 1.2 è il 120% */
+        zoom: 0.9; /* Regola il valore per impostare lo zoom, 1.0 è il 100%, 1.2 è il 120% */
     }
     </style>
     """, unsafe_allow_html=True)
