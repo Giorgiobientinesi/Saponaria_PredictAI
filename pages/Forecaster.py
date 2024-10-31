@@ -259,7 +259,7 @@ else:
         previsioni_scopo = previsioni_scopo[previsioni_scopo["Codice"].isin(scelta_codici)]
 
     #CREO IL DF per il grafico
-    previsioni_scopo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario","Volume finanziario Basso"]]
+    previsioni_scopo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario"]]
 
     previsioni_scopo_grafico = previsioni_scopo_grafico.groupby("ds").sum().reset_index()
 
@@ -306,7 +306,7 @@ else:
 
 
     #CREO GRAFICO
-    today = datetime.today()
+    today = pd.to_datetime("27/10/2024")
     # Split the data into actuals and forecasts
     df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= today]
     df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] > today]
@@ -365,8 +365,8 @@ else:
         # Trova il primo giorno del mese
         primo_giorno = data.replace(day=1)
         # Calcola la settimana attuale e quella del primo giorno del mese
-        settimana_corrente = data.weekofyear
-        settimana_primo_giorno = primo_giorno.weekofyear
+        settimana_corrente = data.isocalendar().week
+        settimana_primo_giorno = primo_giorno.isocalendar().week
         # Calcola il numero di settimana del mese
         return settimana_corrente - settimana_primo_giorno + 1
 
@@ -376,7 +376,7 @@ else:
 
     previsioni_scopo_grafico['ds'] = previsioni_scopo_grafico['ds'].dt.strftime('%d-%m-%Y')
 
-    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]],width=1500)
+    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]].iloc[5:],width=1500)
 
 
     st.write(" ")
@@ -386,11 +386,10 @@ else:
     st.markdown("<div class='subtitle-container'>Vendite e Previsioni per Gruppo Selezionato</div>", unsafe_allow_html=True)
     st.write(" ")
     parametro_raggrupamento = st.selectbox("Seleziona una Caratteristica:", ["Nazione","Articolo","Canale"])
-    previsioni_scopo_secondo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario","Volume finanziario Basso",parametro_raggrupamento]]
+    previsioni_scopo_secondo_grafico = previsioni_scopo[["ds","Quantità","Volume finanziario",parametro_raggrupamento]]
 
     if Economico:
         previsioni_scopo_secondo_grafico["Quantità"] = previsioni_scopo_secondo_grafico["Volume finanziario"]
-        previsioni_scopo_secondo_grafico["Intervallo Basso"] = previsioni_scopo_secondo_grafico["Volume finanziario Basso"]
 
     previsioni_scopo_secondo_grafico["ds"] = pd.to_datetime(previsioni_scopo_secondo_grafico["ds"])
     previsioni_scopo_secondo_grafico = previsioni_scopo_secondo_grafico.groupby(["ds",parametro_raggrupamento]).sum().reset_index()

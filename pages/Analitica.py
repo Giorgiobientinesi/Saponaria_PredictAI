@@ -324,6 +324,8 @@ else:
     )
     col1.markdown("<div class='subtitle-container'>Per Prodotto</div>", unsafe_allow_html=True)
     col1.plotly_chart(fig6)
+
+    df_prodotto['Percentuale'] = ((df_prodotto['Quantità'] / df_prodotto['Quantità'].sum()) * 100).round(2).astype(str)+" %"
     col2.dataframe(df_prodotto.reset_index(drop=True),width=700,height=510)
 
     st.write(" ")
@@ -356,6 +358,8 @@ else:
     )
     col1.markdown("<div class='subtitle-container'>Per Canale di Vendita</div>", unsafe_allow_html=True)
     col1.plotly_chart(fig2)
+    df_tipologia['Percentuale'] = ((df_tipologia['Quantità'] / df_tipologia['Quantità'].sum()) * 100).round(2).astype(
+        str) + " %"
     col1.dataframe(df_tipologia.reset_index(drop=True),width=700,height=350)
 
 
@@ -384,6 +388,8 @@ else:
     )
     col2.markdown("<div class='subtitle-container'>Per Nazione</div>", unsafe_allow_html=True)
     col2.plotly_chart(fig3)
+    df_nazione['Percentuale'] = ((df_nazione['Quantità'] / df_nazione['Quantità'].sum()) * 100).round(2).astype(
+        str) + " %"
     col2.dataframe(df_nazione.reset_index(drop=True),width=700,height=350)
 
     st.write(" ")
@@ -414,6 +420,8 @@ else:
     )
     col1.markdown("<div class='subtitle-container'>Per Linea Prodotto</div>", unsafe_allow_html=True)
     col1.plotly_chart(fig4)
+    df_linea['Percentuale'] = ((df_linea['Quantità'] / df_linea['Quantità'].sum()) * 100).round(2).astype(
+        str) + " %"
     col1.dataframe(df_linea.reset_index(drop=True),width=700,height=350)
 
 
@@ -442,6 +450,8 @@ else:
     )
     col2.markdown("<div class='subtitle-container'>Per Famiglia</div>", unsafe_allow_html=True)
     col2.plotly_chart(fig5)
+    df_famiglia['Percentuale'] = ((df_famiglia['Quantità'] / df_famiglia['Quantità'].sum()) * 100).round(2).astype(
+        str) + " %"
     col2.dataframe(df_famiglia.reset_index(drop=True),width=700,height=350)
 
 

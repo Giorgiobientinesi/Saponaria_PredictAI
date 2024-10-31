@@ -202,10 +202,6 @@ else:
 
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
     previsioni["Volume finanziario"] = previsioni["Volume finanziario"].round(0)
-    previsioni["Intervallo Basso"] = previsioni["Intervallo Basso"].round(0)
-    previsioni["Intervallo Alto"] = previsioni["Intervallo Alto"].round(0)
-    previsioni["Volume finanziario Alto"] = previsioni["Volume finanziario Alto"].round(0)
-    previsioni["Volume finanziario Basso"] = previsioni["Volume finanziario Basso"].round(0)
 
     # Inseriamo lo stile del titolo nel frontend usando st.markdown()
     st.markdown(title_style, unsafe_allow_html=True)
@@ -220,7 +216,7 @@ else:
     previsioni['ds'] = pd.to_datetime(previsioni['ds'])
 
 
-    oggi = pd.to_datetime("today")
+    oggi = pd.to_datetime("27/10/2024")
     mese_attuale = oggi.month
     anno_attuale = oggi.year
     df_mese_adoggi = previsioni[(previsioni['ds'] >= f"{anno_attuale}-{mese_attuale:02d}-01") & (previsioni['ds'] <= oggi)]
