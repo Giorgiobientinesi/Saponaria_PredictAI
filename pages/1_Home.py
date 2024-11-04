@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,date
 import plotly.graph_objects as go
 
 st.set_page_config(layout="wide")
@@ -90,7 +90,7 @@ custom_style_subtitle = """
 st.markdown("""
     <style>
     body {
-        zoom: 0.9; /* Regola il valore per impostare lo zoom, 1.0 è il 100%, 1.2 è il 120% */
+        zoom: 1; /* Regola il valore per impostare lo zoom, 1.0 è il 100%, 1.2 è il 120% */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -212,16 +212,37 @@ else:
     st.write(" ")
     st.write(" ")
 
+    import pandas as pd
+    from datetime import datetime
 
+    # Imposta la data limite (es. 28 ottobre 2024)
+    data_limite = pd.Timestamp("2024-10-28")
+    st.write("Ultima modifica di vendite: "+str(data_limite)[:10])
+
+    # Converti la colonna 'ds' in formato datetime, se non lo è già
     previsioni['ds'] = pd.to_datetime(previsioni['ds'])
 
+    # Aggiungi una colonna che classifica le righe come "sales" o "previsioni"
+    previsioni['tipo'] = previsioni['ds'].apply(lambda x: 'sales' if x <= data_limite else 'previsioni')
 
-    oggi = pd.to_datetime("27/10/2024")
+    # Ottieni la data di oggi
+    oggi = pd.Timestamp(datetime.today())
     mese_attuale = oggi.month
     anno_attuale = oggi.year
-    df_mese_adoggi = previsioni[(previsioni['ds'] >= f"{anno_attuale}-{mese_attuale:02d}-01") & (previsioni['ds'] <= oggi)]
 
-    df_mese_totale = previsioni[(previsioni['ds'].dt.month == mese_attuale) & (previsioni['ds'].dt.year == anno_attuale)]
+    # Filtra le vendite registrate come sales fino alla data di oggi
+    df_mese_adoggi = previsioni[
+        (previsioni['ds'].dt.month == mese_attuale) &
+        (previsioni['ds'].dt.year == anno_attuale) &
+        (previsioni['tipo'] == 'sales') &
+        (previsioni['ds'] <= oggi)
+        ]
+
+    # Filtra tutte le righe (sales e previsioni) per il mese corrente
+    df_mese_totale = previsioni[
+        (previsioni['ds'].dt.month == mese_attuale) &
+        (previsioni['ds'].dt.year == anno_attuale)
+        ]
 
     value_1 = "{:,.0f}".format(df_mese_adoggi["Quantità"].sum().round(3))
     value_2 = "{:,.0f}".format(df_mese_totale["Quantità"].sum().round(3))

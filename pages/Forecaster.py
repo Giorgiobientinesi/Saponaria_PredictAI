@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import plotly.graph_objects as go
+import datetime
 
 st.set_page_config(layout="wide")
 
@@ -203,8 +204,6 @@ else:
 
 
 
-
-
     st.write(" ")
     st.markdown("<div class='subtitle-container'>Definisci lo scopo dell'analisi!</div>", unsafe_allow_html=True)
     st.write(" ")
@@ -297,19 +296,17 @@ else:
 
 
 
-
-
-
     previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>=input_data_inizio]
     previsioni_scopo_grafico = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]<=input_data_fine]
 
 
 
+
     #CREO GRAFICO
-    today = pd.to_datetime("27/10/2024")
+    ultimo_aggiornamento = pd.to_datetime("28/10/2024")
     # Split the data into actuals and forecasts
-    df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= today]
-    df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] > today]
+    df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= ultimo_aggiornamento]
+    df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] >= ultimo_aggiornamento]
 
     fig = go.Figure()
 
@@ -350,8 +347,8 @@ else:
 
     col1.write(" ")
 
-    oggi = datetime.now()
-    previsioni_scopo_grafico_previsioni = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>oggi]
+    ieri = datetime.datetime.now() - datetime.timedelta(days=1)
+    previsioni_scopo_grafico_previsioni = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>=ieri]
 
     create_metric_card(annotazione, str(sum(previsioni_scopo_grafico_previsioni["Quantità"])).split(".")[0],col1)
 
@@ -361,22 +358,18 @@ else:
 
 
     # Funzione per calcolare la settimana del mese
-    def settimana_del_mese(data):
-        # Trova il primo giorno del mese
-        primo_giorno = data.replace(day=1)
-        # Calcola la settimana attuale e quella del primo giorno del mese
-        settimana_corrente = data.isocalendar().week
-        settimana_primo_giorno = primo_giorno.isocalendar().week
-        # Calcola il numero di settimana del mese
-        return settimana_corrente - settimana_primo_giorno + 1
+    def settimana_nell_anno(data):
+        # Restituisce il numero della settimana dell'anno
+        return data.isocalendar().week
 
 
     # Applica la funzione per creare la colonna "settimana_del_mese"
-    previsioni_scopo_grafico['Numero settimana'] = previsioni_scopo_grafico['ds'].apply(settimana_del_mese)
+    previsioni_scopo_grafico['Numero settimana'] = previsioni_scopo_grafico['ds'].apply(
+        lambda x: settimana_nell_anno(pd.to_datetime(x)))
 
     previsioni_scopo_grafico['ds'] = previsioni_scopo_grafico['ds'].dt.strftime('%d-%m-%Y')
 
-    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]].iloc[5:],width=1500)
+    st.dataframe(previsioni_scopo_grafico.reset_index(drop=True)[["ds","Quantità","Numero settimana"]],width=1500)
 
 
     st.write(" ")
@@ -422,7 +415,7 @@ else:
     # Aggiungi una linea per la data di oggi
     fig2.add_shape(type="rect",
         x0=previsioni_scopo_secondo_grafico['ds'].min(), y0=0,
-        x1=today, y1=previsioni_scopo_secondo_grafico['Quantità'].max()*1.8,  # Imposta l'altezza del rettangolo
+        x1=ieri, y1=previsioni_scopo_secondo_grafico['Quantità'].max()*1.8,  # Imposta l'altezza del rettangolo
         fillcolor="lightgray",
         line=dict(color="lightgray"),
         layer="below",
@@ -431,7 +424,7 @@ else:
 
     # Aggiungi rettangolo viola chiaro dopo oggi
     fig2.add_shape(type="rect",
-        x0=today, y0=0,
+        x0=ieri, y0=0,
         x1=previsioni_scopo_secondo_grafico['ds'].max(), y1=previsioni_scopo_secondo_grafico['Quantità'].max()*1.8,  # Imposta l'altezza del rettangolo
         fillcolor="#ceadde",
         line=dict(color="#ceadde"),
@@ -455,4 +448,6 @@ else:
     previsioni_scopo_secondo_grafico['ds'] = previsioni_scopo_secondo_grafico['ds'].dt.strftime('%d-%m-%Y')
 
     st.dataframe(previsioni_scopo_secondo_grafico.reset_index(drop=True)[["ds",parametro_raggrupamento,"Quantità"]],width=1200)
+
+
 

@@ -234,6 +234,7 @@ else:
     ordine = previsioni_scopo.copy()
     #ordine = previsioni[["ds","Articolo","Quantità"]]
     ordine["ds"] = pd.to_datetime(ordine["ds"])
+
     ordine = ordine[ordine["ds"]>=input_data_inizio]
     ordine = ordine[ordine["ds"]<=input_data_fine]
 

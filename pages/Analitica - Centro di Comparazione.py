@@ -241,6 +241,11 @@ else:
 
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])
+    default_value_min_1 = pd.to_datetime("2023/09/01")
+    default_value_max_1 = pd.to_datetime("2023/10/01")
+
+    default_value_min_2= pd.to_datetime("2024/09/01")
+    default_value_max_2 = pd.to_datetime("2024/10/01")
 
     st.markdown(subtitle_style, unsafe_allow_html=True)
     st.write(" ")
@@ -248,14 +253,16 @@ else:
 
     col1.markdown("<div class='subtitle-container'>Scegli il primo intervallo dell'Analisi</div>", unsafe_allow_html=True)
     col1.write(" ")
-    input_data_inizio_uno = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=pd.to_datetime("2022-01-01"),key="A"))
-    input_data_fine_uno = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=pd.to_datetime("2023-01-01"),key="B"))
+    input_data_inizio_uno = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=default_value_min_1,key="A"))
+    input_data_fine_uno = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=default_value_max_1,key="B"))
 
 
     col2.markdown("<div class='subtitle-container'>Scegli l'intervallo da comparare</div>", unsafe_allow_html=True)
     col2.write(" ")
-    input_data_inizio_due = pd.to_datetime(col2.date_input("Seleziona la data di inizio",min_value=data_minima,value=pd.to_datetime("2023-01-01"),key="C"))
-    input_data_fine_due = pd.to_datetime(col2.date_input("Seleziona la data di fine",max_value=data_massima,value=pd.to_datetime("2024-01-01"),key="D"))
+    input_data_inizio_due = pd.to_datetime(col2.date_input("Seleziona la data di inizio",min_value=data_minima,value=default_value_min_2,key="C"))
+    input_data_fine_due = pd.to_datetime(col2.date_input("Seleziona la data di fine",max_value=data_massima,value=default_value_max_2,key="D"))
+
+    df_scopo = df_scopo.rename(columns={'Tipologia': 'Canale'})
 
     primo_df_scopo = df_scopo
     secondo_df_scopo = df_scopo
@@ -299,9 +306,11 @@ else:
     else:
         st.warning("Non sono stati trovati dati per questa analisi in questo periodo.")
 
-    st.write(str(min(primo_df_scopo["Data"])))
     st.divider()
-    scelta_raggruppamento= st.selectbox("Voglio vedere la Differenza per:", ["Articolo","Nazione","Tipologia","Linea Prodotto","Famiglia"])
+
+
+
+    scelta_raggruppamento= st.selectbox("Voglio vedere la Differenza per:", ["Articolo","Nazione","Canale","Linea Prodotto","Famiglia"])
 
     primo_df_scopo = primo_df_scopo[[scelta_raggruppamento,"Quantità"]]
     primo_df_scopo = primo_df_scopo.groupby(scelta_raggruppamento).sum().reset_index()

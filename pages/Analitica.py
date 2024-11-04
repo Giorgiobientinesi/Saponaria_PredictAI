@@ -196,13 +196,16 @@ else:
 
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])
+    default_value_min = pd.to_datetime("2023/10/01")
+    default_value_max = pd.to_datetime("2024/10/01")
+
 
     st.markdown(subtitle_style, unsafe_allow_html=True)
     st.markdown("<div class='subtitle-container'>Scegli il Periodo dell'Analisi</div>", unsafe_allow_html=True)
     st.write(" ")
     col1,col2 = st.columns(2)
-    input_data_inizio = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=data_minima))
-    input_data_fine = pd.to_datetime(col2.date_input("Seleziona la data di fine",max_value=data_massima,value=data_massima))
+    input_data_inizio = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=default_value_min))
+    input_data_fine = pd.to_datetime(col2.date_input("Seleziona la data di fine",max_value=data_massima,value=default_value_max))
 
     #CREO TUTTO IL SISTEMA DI SELEZIONE PER FILTRI
     articoli_unici = analitica["Articolo"].unique().tolist()
