@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta,date
 import plotly.graph_objects as go
+from Utils import add_logo
 
 st.set_page_config(layout="wide")
 
@@ -106,24 +107,6 @@ st.markdown("""
 
 
 
-def add_logo():
-    st.markdown(
-        """
-        <style>
-            [data-testid="stSidebarNav"]::before {
-                content: "PredictAI";
-                margin-left: 20px;
-                margin-top: 20px;
-                font-size: 35px;
-                position: relative;
-                top: -10px;
-                font-weight: bold;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
 add_logo()
 
 st.markdown("""
@@ -216,7 +199,7 @@ else:
     from datetime import datetime
 
     # Imposta la data limite (es. 28 ottobre 2024)
-    data_limite = pd.Timestamp("2024-10-28")
+    data_limite = pd.Timestamp("2024-11-04")
     st.write("Ultima modifica di vendite: "+str(data_limite)[:10])
 
     # Converti la colonna 'ds' in formato datetime, se non lo è già

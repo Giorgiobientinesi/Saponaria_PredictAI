@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+from Utils import add_logo
 
 st.set_page_config(layout="wide")
 
@@ -118,24 +119,6 @@ button_style = """
 }
 </style>
 """
-
-def add_logo():
-    st.markdown(
-        """
-        <style>
-            [data-testid="stSidebarNav"]::before {
-                content: "PredictAI";
-                margin-left: 20px;
-                margin-top: 20px;
-                font-size: 35px;
-                position: relative;
-                top: -10px;
-                font-weight: bold;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
 
 add_logo()
 

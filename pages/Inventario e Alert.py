@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 import plotly.graph_objects as go
+from Utils import add_logo
 
 st.set_page_config(layout="wide")
 
@@ -108,23 +109,7 @@ st.markdown("""
 
 
 
-def add_logo():
-    st.markdown(
-        """
-        <style>
-            [data-testid="stSidebarNav"]::before {
-                content: "PredictAI";
-                margin-left: 20px;
-                margin-top: 20px;
-                font-size: 35px;
-                position: relative;
-                top: -10px;
-                font-weight: bold;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+
 
 add_logo()
 
