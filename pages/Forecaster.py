@@ -285,7 +285,7 @@ else:
 
 
     #CREO GRAFICO
-    ultimo_aggiornamento = pd.to_datetime("04/11/2024")
+    ultimo_aggiornamento = pd.to_datetime("10/28/2024")
     # Split the data into actuals and forecasts
     df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= ultimo_aggiornamento]
     df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] >= ultimo_aggiornamento]
