@@ -15,7 +15,7 @@ def add_logo():
                 display: block;
                 margin-left: 20px;
                 margin-top: 20px;
-                width: 150px;
+                width: 50px;
                 height: 150px;
                 background-image: url("data:image/svg+xml;base64,{svg_base64}");
                 background-size: contain;
