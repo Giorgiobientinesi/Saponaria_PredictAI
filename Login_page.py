@@ -1,6 +1,6 @@
 import streamlit as st
 import warnings
-
+from Utils import add_logo
 # Disabilita i warnings
 warnings.filterwarnings("ignore")
 # Inizializza lo stato della variabile 'Light' se non esiste
@@ -40,28 +40,6 @@ if st.session_state['Light'] == 'red':
             st.error("Username o Password non corretti!")
 else:
     st.set_page_config(initial_sidebar_state="expanded")  # Espandi la sidebar quando l'accesso è riuscito
-
-
-    # Inserisci il logo nella sidebar
-    def add_logo():
-        st.markdown(
-            """
-            <style>
-                [data-testid="stSidebarNav"]::before {
-                    content: "PredictAI";
-                    margin-left: 20px;
-                    margin-top: 20px;
-                    font-size: 35px;
-                    position: relative;
-                    top: -10px;
-                    font-weight: bold;
-                }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
-
-
     add_logo()
 
     # Inizializza la sidebar con uno sfondo personalizzato
