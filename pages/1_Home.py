@@ -199,7 +199,7 @@ else:
     from datetime import datetime
 
     # Imposta la data limite (es. 28 ottobre 2024)
-    data_limite = pd.Timestamp("2024-10-28")
+    data_limite = pd.Timestamp("2024-11-04")
     st.write("Ultima modifica di vendite: "+str(data_limite)[:10])
 
     # Converti la colonna 'ds' in formato datetime, se non lo è già

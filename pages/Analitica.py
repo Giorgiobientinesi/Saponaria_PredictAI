@@ -179,8 +179,8 @@ else:
 
     data_minima = min(analitica["Data"])
     data_massima = max(analitica["Data"])
-    default_value_min = pd.to_datetime("2023/10/01")
-    default_value_max = pd.to_datetime("2024/10/01")
+    default_value_min = pd.to_datetime("2023/11/01")
+    default_value_max = pd.to_datetime("2024/11/01")
 
 
     st.markdown(subtitle_style, unsafe_allow_html=True)

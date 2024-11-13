@@ -285,7 +285,7 @@ else:
 
 
     #CREO GRAFICO
-    ultimo_aggiornamento = pd.to_datetime("10/28/2024")
+    ultimo_aggiornamento = pd.to_datetime("11/04/2024")
     # Split the data into actuals and forecasts
     df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= ultimo_aggiornamento]
     df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] >= ultimo_aggiornamento]
@@ -329,7 +329,7 @@ else:
 
     col1.write(" ")
 
-    ieri = datetime.datetime.now() - datetime.timedelta(days=1)
+    ieri = pd.to_datetime(ultimo_aggiornamento) - datetime.timedelta(days=1)
     previsioni_scopo_grafico_previsioni = previsioni_scopo_grafico[previsioni_scopo_grafico["ds"]>=ieri]
 
     create_metric_card(annotazione, str(sum(previsioni_scopo_grafico_previsioni["Quantità"])).split(".")[0],col1)
