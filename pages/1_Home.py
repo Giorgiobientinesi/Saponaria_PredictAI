@@ -258,7 +258,13 @@ else:
     fine_prossimo_mese = oggi + timedelta(days=31)
     df_prossimo_mese = previsioni[(previsioni['ds'] >= inizio_prossimo_mese) & (previsioni['ds'] <= fine_prossimo_mese)]
 
+
+
     col1,col2 = st.columns(2)
+    articoli_esclusi = col1.multiselect("Escludi Articoli",df_prossimo_mese["Articolo"].unique())
+    linea_esclusi = col2.multiselect("Escludi Linea", df_prossimo_mese["Linea Prodotto"].unique())
+    canale_esclusi = col1.multiselect("Escludi Canale",df_prossimo_mese["Canale"].unique())
+    famiglia_esclusi = col2.multiselect("Escludi Famiglia", df_prossimo_mese["Famiglia"].unique())
 
     giacenze = giacenze.rename(columns={
         'Descrizione': 'Articolo',
@@ -267,6 +273,14 @@ else:
 
     giacenze['Quantità_giacenza'] = giacenze['Quantità_giacenza'].str.replace(',', '.').astype(float).astype(int)
 
+    df_prossimo_mese = df_prossimo_mese[~df_prossimo_mese['Articolo'].isin(articoli_esclusi)]
+    df_ultimo_mese = df_ultimo_mese[~df_ultimo_mese['Articolo'].isin(articoli_esclusi)]
+    df_prossimo_mese = df_prossimo_mese[~df_prossimo_mese['Linea Prodotto'].isin(linea_esclusi)]
+    df_ultimo_mese = df_ultimo_mese[~df_ultimo_mese['Linea Prodotto'].isin(linea_esclusi)]
+    df_prossimo_mese = df_prossimo_mese[~df_prossimo_mese['Canale'].isin(canale_esclusi)]
+    df_ultimo_mese = df_ultimo_mese[~df_ultimo_mese['Canale'].isin(canale_esclusi)]
+    df_prossimo_mese = df_prossimo_mese[~df_prossimo_mese['Famiglia'].isin(famiglia_esclusi)]
+    df_ultimo_mese = df_ultimo_mese[~df_ultimo_mese['Famiglia'].isin(famiglia_esclusi)]
 
     df_prossimo_mese_giacenze = df_prossimo_mese[["Articolo","Quantità"]].groupby("Articolo").sum().reset_index()
     df_prossimo_mese_giacenze = pd.merge(df_prossimo_mese_giacenze, giacenze[["Articolo","Quantità_giacenza"]], on='Articolo', how='left')
@@ -309,6 +323,8 @@ else:
 
     col1.markdown(subtitle_style, unsafe_allow_html=True)
     col1.markdown("<div class='subtitle-container'>Top 5 Prodotti Safe</div>", unsafe_allow_html=True)
+
+
     col1.plotly_chart(fig)
 
     df_prossimo_mese_giacenze_tail['Articolo_abbr'] = df_prossimo_mese_giacenze_tail['Articolo'].apply(
