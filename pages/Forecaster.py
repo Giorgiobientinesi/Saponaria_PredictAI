@@ -265,8 +265,8 @@ else:
     col1.markdown(subtitle_style, unsafe_allow_html=True)
     col1.markdown("<div class='subtitle-container'>Scegli le impostazioni del grafico</div>", unsafe_allow_html=True)
     col1.write(" ")
-    input_data_inizio = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=data_minima))
-    input_data_fine = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=data_massima))
+    input_data_inizio = pd.to_datetime(col1.date_input("Seleziona la data di inizio",min_value=data_minima,value=pd.to_datetime("2024-01-01")))
+    input_data_fine = pd.to_datetime(col1.date_input("Seleziona la data di fine",max_value=data_massima,value=pd.to_datetime("2025-11-01")))
     col1.write(" ")
 
     Economico = col1.toggle("Visualizza in Volume finanziario")
@@ -285,7 +285,7 @@ else:
 
 
     #CREO GRAFICO
-    ultimo_aggiornamento = pd.to_datetime("11/11/2024") #mese giorno
+    ultimo_aggiornamento = pd.to_datetime("11/18/2024") #mese giorno
     # Split the data into actuals and forecasts
     df_actual = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] <= ultimo_aggiornamento]
     df_forecast = previsioni_scopo_grafico[previsioni_scopo_grafico['ds'] >= ultimo_aggiornamento]
