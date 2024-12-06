@@ -199,8 +199,8 @@ else:
     from datetime import datetime
 
     # Imposta la data limite (es. 28 ottobre 2024)
-    data_limite = pd.Timestamp("2024-11-18") #mese giorno
-    st.write("Ultima modifica di vendite: "+str(data_limite)[:10] + ". Quindi la settimana che va fino al 25/11.")
+    data_limite = pd.Timestamp("2024-11-25") #mese giorno
+    st.write("Ultima modifica di vendite: "+str(data_limite)[:10] + ". Quindi la settimana che va fino al 02/12.")
 
     # Converti la colonna 'ds' in formato datetime, se non lo è già
     previsioni['ds'] = pd.to_datetime(previsioni['ds'])
