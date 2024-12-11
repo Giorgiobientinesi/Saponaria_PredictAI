@@ -159,7 +159,7 @@ else:
 
     previsioni["Quantità"] = previsioni["Quantità"].round(0)
 
-    data_minima = pd.to_datetime("11/25/2024")  #mese giorno
+    data_minima = pd.to_datetime("2024-12-02")  #mese giorno
     data_massima = max(pd.to_datetime(previsioni["ds"]))
     st.markdown(subtitle_style, unsafe_allow_html=True)
     col1, col2 = st.columns(2)
