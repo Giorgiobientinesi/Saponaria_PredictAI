@@ -171,7 +171,8 @@ else:
     previsioni_6 = pd.read_csv("File_forecaster_6.csv")
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
-    giacenze = pd.read_csv("Giacenze attuali.csv",sep=';', encoding='latin-1')
+    giacenze = pd.read_csv("Giacenze attuali.csv",sep=',', encoding='latin-1')
+
 
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
@@ -199,8 +200,8 @@ else:
     from datetime import datetime
 
     # Imposta la data limite (es. 28 ottobre 2024)
-    data_limite = pd.Timestamp("2024-12-02") #mese giorno
-    st.write("Ultima modifica di vendite: "+str(data_limite)[:10] + ". Quindi la settimana che va fino al 09/12.")
+    data_limite = pd.Timestamp("2024-12-09") #mese giorno
+    st.write("Ultima modifica di vendite: "+str(data_limite)[:10] + ". Quindi la settimana che va fino al 16/12.")
 
     # Converti la colonna 'ds' in formato datetime, se non lo è già
     previsioni['ds'] = pd.to_datetime(previsioni['ds'])
@@ -271,7 +272,7 @@ else:
         'QtaGiac': 'Quantità_giacenza'
     })
 
-    giacenze['Quantità_giacenza'] = giacenze['Quantità_giacenza'].str.replace(',', '.').astype(float).astype(int)
+    #giacenze['Quantità_giacenza'] = giacenze['Quantità_giacenza'].str.replace(',', '.').astype(float).astype(int)
 
     df_prossimo_mese = df_prossimo_mese[~df_prossimo_mese['Articolo'].isin(articoli_esclusi)]
     df_ultimo_mese = df_ultimo_mese[~df_ultimo_mese['Articolo'].isin(articoli_esclusi)]
