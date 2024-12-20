@@ -176,8 +176,7 @@ else:
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
     previsioni = pd.concat([previsioni_1, previsioni_2, previsioni_3, previsioni_4, previsioni_5,previsioni_6,previsioni_7])
-    giacenze = pd.read_csv("Giacenze attuali.csv",sep=',', encoding='latin-1')
-
+    giacenze = pd.read_excel("Giacenze attuali.xls")
 
 
     previsioni["Key"] = previsioni["Articolo"].astype(str) + "__" + previsioni["Canale"].astype(str) + "__" +previsioni["Nazione"].astype(str)

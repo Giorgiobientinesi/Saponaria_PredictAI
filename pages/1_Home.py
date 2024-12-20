@@ -171,7 +171,7 @@ else:
     previsioni_6 = pd.read_csv("File_forecaster_6.csv")
     previsioni_7 = pd.read_csv("File_forecaster_7.csv")
 
-    giacenze = pd.read_csv("Giacenze attuali.csv",sep=',', encoding='latin-1')
+    giacenze = pd.read_excel("Giacenze attuali.xls")
 
 
 
